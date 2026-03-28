@@ -1,26 +1,274 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --deep: #0a1628;
+  --ocean: #0d3b6e;
+  --aqua: #00b4d8;
+  --crystal: #90e0ef;
+  --gold: #c9a84c;
+  --white: #f8faff;
+  --pool-floor: #061220;
+  --pool-mid: #0a1e3d;
+  --pool-light: #0f2a52;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-deep: #0a1628;
+  --color-ocean: #0d3b6e;
+  --color-aqua: #00b4d8;
+  --color-crystal: #90e0ef;
+  --color-gold: #c9a84c;
+  --color-offwhite: #f8faff;
+  --color-pool-floor: #061220;
+  --color-pool-mid: #0a1e3d;
+  --color-pool-light: #0f2a52;
+  --font-display: var(--font-playfair);
+  --font-body: var(--font-dm-sans);
+  --shadow-pool-glow: 0 20px 50px rgba(0, 180, 216, 0.15);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--pool-floor);
+  color: var(--white);
+  font-family: var(--font-body, "DM Sans", sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ═══════════════════════════════════════
+   WATER CAUSTICS — animated light refraction
+   ═══════════════════════════════════════ */
+
+.caustic-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-repeat: repeat;
+  background-size: 500px 500px;
+}
+
+.caustic-1 {
+  background-image:
+    radial-gradient(ellipse 80px 60px at 20% 30%, rgba(144, 224, 239, 0.6) 0%, transparent 70%),
+    radial-gradient(ellipse 120px 80px at 60% 20%, rgba(0, 180, 216, 0.5) 0%, transparent 70%),
+    radial-gradient(ellipse 60px 90px at 80% 60%, rgba(144, 224, 239, 0.4) 0%, transparent 70%),
+    radial-gradient(ellipse 100px 70px at 40% 70%, rgba(0, 180, 216, 0.5) 0%, transparent 70%),
+    radial-gradient(ellipse 70px 100px at 10% 80%, rgba(144, 224, 239, 0.3) 0%, transparent 70%),
+    radial-gradient(ellipse 90px 60px at 90% 40%, rgba(0, 180, 216, 0.4) 0%, transparent 70%);
+  animation: caustic-drift-1 8s ease-in-out infinite alternate;
+}
+
+.caustic-2 {
+  background-image:
+    radial-gradient(ellipse 90px 70px at 70% 40%, rgba(144, 224, 239, 0.5) 0%, transparent 70%),
+    radial-gradient(ellipse 60px 100px at 30% 60%, rgba(0, 180, 216, 0.4) 0%, transparent 70%),
+    radial-gradient(ellipse 110px 60px at 50% 80%, rgba(144, 224, 239, 0.3) 0%, transparent 70%),
+    radial-gradient(ellipse 80px 80px at 85% 15%, rgba(0, 180, 216, 0.5) 0%, transparent 70%),
+    radial-gradient(ellipse 70px 90px at 15% 50%, rgba(144, 224, 239, 0.4) 0%, transparent 70%);
+  animation: caustic-drift-2 10s ease-in-out infinite alternate;
+}
+
+@keyframes caustic-drift-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -20px) scale(1.05); }
+  100% { transform: translate(-20px, 15px) scale(0.97); }
+}
+
+@keyframes caustic-drift-2 {
+  0% { transform: translate(0, 0) scale(1.02); }
+  50% { transform: translate(-25px, 25px) scale(0.98); }
+  100% { transform: translate(15px, -10px) scale(1.04); }
+}
+
+/* ═══════════════════════════════════════
+   LIGHT RAYS — from the surface above
+   ═══════════════════════════════════════ */
+
+.light-rays {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(175deg, rgba(144, 224, 239, 0.03) 0%, transparent 40%),
+    linear-gradient(170deg, rgba(0, 180, 216, 0.02) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(144, 224, 239, 0.015) 0%, transparent 60%);
+  animation: ray-shimmer 6s ease-in-out infinite alternate;
+}
+
+@keyframes ray-shimmer {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+/* ═══════════════════════════════════════
+   BUBBLES — rising from below
+   ═══════════════════════════════════════ */
+
+.bubble {
+  position: absolute;
+  bottom: -20px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(144, 224, 239, 0.4),
+    rgba(0, 180, 216, 0.1) 60%,
+    transparent
+  );
+  border: 1px solid rgba(144, 224, 239, 0.15);
+  animation: bubble-rise linear infinite;
+}
+
+@keyframes bubble-rise {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-50vh) translateX(15px) scale(1.1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-110vh) translateX(-10px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+/* ═══════════════════════════════════════
+   WATER SURFACE — ripple at the top
+   ═══════════════════════════════════════ */
+
+.water-surface-line {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(144, 224, 239, 0.3),
+    rgba(0, 180, 216, 0.5),
+    rgba(144, 224, 239, 0.3),
+    transparent
+  );
+  animation: surface-ripple 4s ease-in-out infinite;
+}
+
+@keyframes surface-ripple {
+  0%, 100% { transform: scaleX(1); opacity: 0.4; }
+  50% { transform: scaleX(1.02); opacity: 0.7; }
+}
+
+/* ═══════════════════════════════════════
+   UNDERWATER GLASS CARDS
+   ═══════════════════════════════════════ */
+
+.glass-card {
+  background: rgba(10, 30, 61, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 180, 216, 0.12);
+}
+
+.glass-card-light {
+  background: rgba(15, 42, 82, 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(144, 224, 239, 0.1);
+}
+
+/* ═══════════════════════════════════════
+   SKIP LINK
+   ═══════════════════════════════════════ */
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--aqua);
+  color: white;
+  padding: 8px 16px;
+  z-index: 100;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Focus visible ring */
+*:focus-visible {
+  outline: 2px solid var(--aqua);
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--pool-floor);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ocean);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--aqua);
+}
+
+/* ═══════════════════════════════════════
+   EXISTING ANIMATIONS
+   ═══════════════════════════════════════ */
+
+@keyframes gradient-mesh {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.animate-gradient-mesh {
+  background-size: 200% 200%;
+  animation: gradient-mesh 6s ease infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes ken-burns {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-ken-burns {
+  animation: ken-burns 8s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════
+   UNDERWATER SECTION DIVIDERS — wavy transitions
+   ═══════════════════════════════════════ */
+
+.water-divider-top {
+  position: relative;
+}
+
+.water-divider-top::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 40'%3E%3Cpath fill='%23061220' d='M0,20 C240,40 480,0 720,20 C960,40 1200,0 1440,20 L1440,0 L0,0 Z'/%3E%3C/svg%3E")
+    no-repeat center / cover;
 }
