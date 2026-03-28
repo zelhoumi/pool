@@ -14,11 +14,11 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 export default function WhyUs() {
   return (
-    <section className="py-14 lg:py-28 bg-pool-floor/50" id="pourquoi-nous">
-      <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-          {/* Image */}
-          <ScrollReveal direction="left" distance={60}>
+    <section className="py-12 sm:py-20 lg:py-28 bg-pool-floor/50" id="pourquoi-nous">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-20">
+          {/* Image — hidden on very small screens, shown sm+ */}
+          <ScrollReveal direction="left" distance={60} className="hidden sm:block">
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
               <Image
                 src="https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?w=800&q=80"
@@ -34,30 +34,32 @@ export default function WhyUs() {
           </ScrollReveal>
 
           {/* Content */}
-          <ScrollReveal direction="right" distance={60}>
-            <h2 className="font-display text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
-              {WHY_US.title}
-            </h2>
+          <div>
+            <ScrollReveal>
+              <h2 className="font-display text-[22px] font-bold text-white sm:text-3xl lg:text-4xl">
+                {WHY_US.title}
+              </h2>
+            </ScrollReveal>
 
-            <div className="mt-8 space-y-6">
+            <div className="mt-6 space-y-4 sm:mt-8 sm:space-y-6">
               {WHY_US.points.map((point, i) => {
                 const Icon = iconMap[point.icon];
                 return (
                   <ScrollReveal key={point.title} delay={i * 0.1}>
-                    <div className="flex gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-aqua/10 border border-aqua/20">
-                        {Icon && <Icon className="h-6 w-6 text-aqua" aria-hidden="true" />}
+                    <div className="flex gap-3 sm:gap-4">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-aqua/10 border border-aqua/20 sm:h-12 sm:w-12">
+                        {Icon && <Icon className="h-5 w-5 text-aqua sm:h-6 sm:w-6" aria-hidden="true" />}
                       </div>
-                      <div>
-                        <h3 className="font-display text-lg font-bold text-white">{point.title}</h3>
-                        <p className="mt-1 text-sm leading-relaxed text-crystal/50">{point.desc}</p>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-display text-base font-bold text-white sm:text-lg">{point.title}</h3>
+                        <p className="mt-0.5 text-[13px] leading-relaxed text-crystal/50 sm:mt-1 sm:text-sm">{point.desc}</p>
                       </div>
                     </div>
                   </ScrollReveal>
                 );
               })}
             </div>
-          </ScrollReveal>
+          </div>
         </div>
       </div>
     </section>
