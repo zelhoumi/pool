@@ -11,7 +11,7 @@ export default function CTA() {
       <div
         className="absolute inset-0 animate-gradient-mesh"
         style={{
-          background: "linear-gradient(135deg, #0d3b6e, #061220, #00b4d8, #0a1e3d)",
+          background: "linear-gradient(135deg, #054a72, #04263b, #0284c7, #053d5e)",
         }}
       />
 
